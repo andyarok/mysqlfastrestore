@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module rename-to='home'>
+	<!-- Inherit the core Web Toolkit stuff. -->
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name="com.google.gwt.resources.Resources" />
+	<inherits name="com.google.gwt.xml.XML" />
+	<inherits name="com.google.gwt.http.HTTP" />
+	<inherits name="gwt.material.design.GwtMaterialWithJQuery" />
+	<inherits name="gwt.material.design.GwtMaterialDesignBasic" />
+	<inherits name="gwt.material.design.themes.ThemeBlue" />
+	<inherits name="gwt.material.design.addins.GwtMaterialAddins" />
+	<inherits name="com.google.gwt.json.JSON" />
+	<source path='client' />
+	<entry-point class='com.quasle.mysqlfastbackup.client.HomeView' />
+	<add-linker name="xsiframe" />
+	<set-configuration-property	name="CssResource.enableGss" value="true" />
+</module>

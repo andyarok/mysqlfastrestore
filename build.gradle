@@ -1,0 +1,43 @@
+plugins{
+	id 'eclipse'
+}
+
+
+project.buildDir = 'dist'
+version = '1.0'
+
+task launchNodeWebKit(type: Exec){
+	workingDir './nwjs-sdk-v0.35.5-linux-x64'
+	commandLine './nw', '../dist'
+}
+
+task clean(type: Delete){
+	delete 'dist/index.html'
+	delete 'dist/home'
+	delete 'package.json'
+}
+
+task copyResources{
+	doLast{
+		copy{
+			from "main/src"
+			include '**'
+			into "dist"
+		}
+		/*copy{
+			from "main/node_modules"
+			into "dist/node_modules"
+		}*/
+		copy{
+			from 'ui/build/'
+			include 'index.html', 'home/**'
+			into 'dist'
+		}
+		
+	
+	}
+}
+
+task compileNLaunch(type: GradleBuild){
+	tasks = [':ui:buildAll', 'copyResources', 'launchNodeWebKit']
+}

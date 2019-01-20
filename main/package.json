@@ -1,0 +1,15 @@
+{
+  "name": "mysqlfastbkp",
+  "version": "1.0.0",
+  "dependencies": {
+    "mysql": "~2.16.0"
+  },
+  "devDependencies": {
+    "nw": "^0.35.5",
+    "nw-builder": "^3.5.7"
+  },
+  "scripts": {
+    "dev": "nw src/",
+    "prod": "nwbuild -p linux64 --buildDir dist/ src/"
+  }
+}
