@@ -1,0 +1,12 @@
+/nwjs-sdk-v0.35.5-linux-x64.tar.gz
+/nwjs-sdk-v0.35.5-linux-x64
+main/node_modules
+ui/build
+ui/extras
+ui/gwt-unitCache
+ui/.project
+ui/.classpath
+/.gradle/
+dist
+.project
+.settings
