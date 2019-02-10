@@ -1,0 +1,54 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:m="urn:import:gwt.material.design.client.ui" 
+	xmlns:p="urn:import:org.apache.xpath.patterns"
+	xmlns:ma="urn:import:gwt.material.design.addins.client" 
+	xmlns:f="urn:import:gwt.material.design.addins.client.fileuploader" xmlns:d="urn:import:com.google.gwt.dom.client">
+	<ui:style>
+		.mainContent{
+			padding-top: 10%;
+		}
+	</ui:style>
+	<m:MaterialPanel>
+		<m:MaterialHeader>
+			<!-- <m:MaterialNavBar>
+				<m:MaterialNavBrand>
+					
+				</m:MaterialNavBrand>
+			</m:MaterialNavBar> -->
+		</m:MaterialHeader>
+		<m:MaterialContainer>
+			<m:MaterialPanel addStyleNames="{style.mainContent}">
+				<ma:stepper.MaterialStepper axis="HORIZONTAL" shadow="1" ui:field="stepper">
+				<ma:stepper.MaterialStep step="1" title="Select Database" description="Select database(s) to backup">
+						<m:MaterialPanel width="100%" >
+					 		<m:MaterialCollection ui:field="itemContainer" />
+					 	</m:MaterialPanel>
+						<m:MaterialButton ui:field="nextBtn" text="Select Destination" grid="l4" marginTop="12" textColor="WHITE" waves="DEFAULT"/>
+						<m:MaterialButton ui:field="cancelBtn" text="Cancel" grid="l4" marginTop="12" type="FLAT" waves="DEFAULT"/>
+				</ma:stepper.MaterialStep>
+				<ma:stepper.MaterialStep step="2" title="Select Destination" description="Select destination to save backup">
+						<m:MaterialPanel width="100%" >
+							<m:MaterialCard backgroundColor="LIGHT_BLUE" ui:field="browseCard">
+								<m:MaterialCardContent>
+									<m:MaterialLink iconPosition="LEFT" textColor="WHITE" iconColor="WHITE" text="Click here to select folder" ui:field="browseIcon" 
+									iconType="FOLDER" waves="LIGHT"></m:MaterialLink>
+								</m:MaterialCardContent>
+								<m:MaterialCardAction>
+									<g:HTMLPanel >
+										<input id="selector" type="file" nwdirectory="" style="width: 0"/>
+									</g:HTMLPanel>
+									<m:MaterialLabel ui:field="locText" text=""></m:MaterialLabel>		
+								</m:MaterialCardAction>
+							</m:MaterialCard>
+							 	
+						</m:MaterialPanel>
+						<m:MaterialButton ui:field="saveBtn" text="Save"></m:MaterialButton>
+						
+				</ma:stepper.MaterialStep>
+				</ma:stepper.MaterialStepper>
+ 			</m:MaterialPanel>
+		</m:MaterialContainer>
+	</m:MaterialPanel>
+</ui:UiBinder> 

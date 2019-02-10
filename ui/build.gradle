@@ -52,6 +52,7 @@ task gwtCompileHome(dependsOn: classes, type: JavaExec){
 			'-localWorkers', '3',
 			'-style', 'DETAILED',
 			'-compileReport',
+			'-generateJsInteropExports', 
 			//, 
 			//'-extra', extraDir,
 			'-draftCompile' // Speeds up compile with 25%

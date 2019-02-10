@@ -14,6 +14,7 @@ task launchNodeWebKit(type: Exec){
 task clean(type: Delete){
 	delete 'dist/index.html'
 	delete 'dist/home'
+	delete 'dist/js'
 	delete 'package.json'
 }
 
@@ -30,7 +31,7 @@ task copyResources{
 		}*/
 		copy{
 			from 'ui/build/'
-			include 'index.html', 'home/**'
+			include 'index.html', 'home/**', 'js/**'
 			into 'dist'
 		}
 		
