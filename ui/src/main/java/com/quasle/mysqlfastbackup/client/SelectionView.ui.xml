@@ -14,6 +14,7 @@
 					
 				</m:MaterialNavBrand>
 			</m:MaterialNavBar> -->
+			<m:MaterialLabel text="What would you like to do?"></m:MaterialLabel>
 		</m:MaterialHeader>
 		<m:MaterialContainer addStyleNames="{style.selectContent}">
 			<m:MaterialRow>

@@ -31,8 +31,8 @@ public class SelectionView extends Composite {
 	
 	@UiHandler("restoreCard")
 	void onRestoreClick(ClickEvent evt) {
-		MainView mainView = new MainView();
-		mainView.loadRestoreView();
+		RestoreView rView = new RestoreView();
+		HomeView.setMainWidget(rView);
 	}
 
 }

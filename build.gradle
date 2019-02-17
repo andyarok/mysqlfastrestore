@@ -31,7 +31,7 @@ task copyResources{
 		}*/
 		copy{
 			from 'ui/build/'
-			include 'index.html', 'home/**', 'js/**'
+			include 'index.html', 'home/**', 'js/**', '*.sql'
 			into 'dist'
 		}
 		

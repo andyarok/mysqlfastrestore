@@ -16,5 +16,7 @@ public class Util {
 	@JsMethod
 	public native void clickBrowse(SelectionCallback callback);
 	
+	@JsMethod
+	public native void close();
 
 }

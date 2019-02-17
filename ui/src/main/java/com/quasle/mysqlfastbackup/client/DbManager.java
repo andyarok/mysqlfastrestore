@@ -13,11 +13,16 @@ public class DbManager {
 		void onResult(String result);
 	}
 	
+	@JsFunction
+	public interface SaveProgressCallback{
+		void onProgress(double percent, String msg);
+	}
+	
 	@JsMethod
 	public native void parseConfig();
 	
 	@JsMethod
-	public native void getDirectory();
+	public native void getDirectory(DatabaseCallback cbk);
 	
 	@JsMethod
 	public native String getAllDatabases(DatabaseCallback dbCallback);
@@ -26,5 +31,14 @@ public class DbManager {
 	public native void setObject(ConfigScreen screen);
 	
 	@JsMethod
-	public native void saveDatabase(String dbName, String destination);
+	public native void setSaveProgressCallback(SaveProgressCallback cbk);
+	
+	@JsMethod
+	public native void saveDatabase(String dbName, String fromLocation, String destination);
+	
+	@JsMethod
+	public native void restoreDatabase(String folderName, String mysqlLoc, String dbName, SaveProgressCallback cbk);
+	
+	@JsMethod
+	public native void createDatabase(String dbName, DatabaseCallback cbk);
 }

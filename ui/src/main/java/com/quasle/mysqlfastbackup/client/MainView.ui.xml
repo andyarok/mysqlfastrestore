@@ -12,11 +12,7 @@
 	</ui:style>
 	<m:MaterialPanel>
 		<m:MaterialHeader>
-			<!-- <m:MaterialNavBar>
-				<m:MaterialNavBrand>
-					
-				</m:MaterialNavBrand>
-			</m:MaterialNavBar> -->
+
 		</m:MaterialHeader>
 		<m:MaterialContainer>
 			<m:MaterialPanel addStyleNames="{style.mainContent}">
@@ -46,6 +42,14 @@
 						</m:MaterialPanel>
 						<m:MaterialButton ui:field="saveBtn" text="Save"></m:MaterialButton>
 						
+				</ma:stepper.MaterialStep>
+				<ma:stepper.MaterialStep step="3" title="Saving Database" description="Saving Database to the selected location">
+						<m:MaterialPanel width="100%" >
+							<m:MaterialProgress ui:field="progressBar" type="DETERMINATE" percent="5" />
+							<m:MaterialLabel ui:field="statusText" text=""></m:MaterialLabel>
+					 	</m:MaterialPanel>
+					 	<m:MaterialButton visible="false" ui:field="homeBtn" text="Home" grid="l4" marginLeft="20" marginTop="20" textColor="WHITE" waves="DEFAULT"/>
+						<m:MaterialButton visible="false" ui:field="exitBtn" text="Exit" grid="l4" marginLeft="20" marginTop="20" textColor="WHITE" waves="DEFAULT"/>
 				</ma:stepper.MaterialStep>
 				</ma:stepper.MaterialStepper>
  			</m:MaterialPanel>
