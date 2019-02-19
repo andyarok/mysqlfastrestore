@@ -1,8 +1,8 @@
 var Config = function(){
 	var obj = null;
 	var fs = require('fs');
-	var mysql = require('mysql');	
-	
+	var mysql = require('mysql');
+
 	this.checkConfig = function(){
 		var self = this;
 		console.log('Checking config');
@@ -15,13 +15,13 @@ var Config = function(){
   				console.log('debug 2');
 			}
 		});
-		
+
 	}
-	
+
 	this.setObject = function(gwtObj){
 		obj = gwtObj;
 	}
-	
+
 	this.createConfig = function(){
 		console.log('Config File does not exist ', obj);
 		var msg = 'Configuring your application';
@@ -34,7 +34,7 @@ var Config = function(){
 		  password : 'andyflow',
 		  database : 'privatecloud'
 		});
-		
+
 		connection.connect(function(err){
 			if(err){
 				console.log('error connecting to database');
@@ -46,16 +46,16 @@ var Config = function(){
 			}
 		});
 	}
-	
-	
-	
+
+
+
 	this.writeConfig = function(user, password, host, database){
 		var configObj = new Object();
 		configObj.host = host;
 		configObj.user = user;
 		configObj.password = password;
 		configObj.database = database;
-		
+
 		var configStr = JSON.stringify(configObj);
 		fs.writeFile('config.json', configStr, function(err){
 			if(err){
@@ -63,20 +63,20 @@ var Config = function(){
 			}
 		});
 	}
-	
-	
-	
+
+
+
 }
 
 var DbManager = function(){
-	
+
 	var conn = null;
 	var obj = null;
 	var fs = require('fs');
 	var mysql = require('mysql');
 	var sp = require('sudo-prompt');
 	var progressCbk = null;
-	
+
 	this.parseConfig = function(){
 		var self = this;
 		fs.readFile('config.json', function(err, data){
@@ -89,19 +89,19 @@ var DbManager = function(){
 				console.log('parsing config file ', configObj.database);
 				self.createConnection(configObj.user, configObj.password, configObj.host, configObj.database);
 			}
-				
+
 		});
 	}
-	
+
 	this.setObject = function(gwtObj){
 		obj = gwtObj;
 		console.log('set object called ', obj);
 	}
-	
+
 	this.setSaveProgressCallback = function(callbackObj){
 		progressCbk = callbackObj;
 	}
-	
+
 	this.createConnection = function(puser, ppassword, phost, pdatabase){
 		console.log('Creating connection');
 		var self = this;
@@ -122,9 +122,9 @@ var DbManager = function(){
 				obj.onSuccessfullConnect();
 			}
 		});
-		
+
 	}
-	
+
 	this.saveDatabase = function(dbName, srcFolder, destination){
 		var self = this;
 		var date = new Date();
@@ -136,7 +136,7 @@ var DbManager = function(){
 		fs.mkdirSync(fName);
 		console.log('mysql dir ', srcFolder);
 		var stream = fs.createWriteStream(fName+"/structure.sql", {flags:'a'});
-		var qryStr = "SELECT TABLE_NAME FROM information_schema.TABLES where TABLE_SCHEMA= '"+dbName+"' and TABLE_TYPE='BASE TABLE'"; 
+		var qryStr = "SELECT TABLE_NAME FROM information_schema.TABLES where TABLE_SCHEMA= '"+dbName+"' and TABLE_TYPE='BASE TABLE'";
 		conn.query(qryStr,function(err, results, fields){
 			files.size=results.length;
 			for(var i=0; i < results.length;i++ ){
@@ -144,13 +144,13 @@ var DbManager = function(){
 				self.saveTableData(results[i].TABLE_NAME, dbName, tStamp, files,srcFolder, fName);
 			}
 			console.log('files list ', files);
-			
+
 		});
-		
+
 	}
 
 
-	
+
 	this.saveTableData = function(table_name, dbName, tStamp, files, srcFolder,destination){
 		var os = require('os');
 		var linux = true;
@@ -160,25 +160,25 @@ var DbManager = function(){
 			linux=false;
 			file_name = srcFolder.replace(/\\/g,'/')+dbName+"_"+table_name+"_"+tStamp+".csv";
 		}
-		
+
 		var fObj = new Object();
 		fObj.fileName = srcFolder+dbName+"_"+table_name+"_"+tStamp+".csv";
-		fObj.tableName = table_name; 
+		fObj.tableName = table_name;
 		var qryStr = "SELECT * FROM "+dbName+"."+ table_name+" INTO OUTFILE '" + file_name + "' "
-						+" FIELDS TERMINATED BY ','  ENCLOSED BY '\"' ESCAPED BY '' LINES TERMINATED BY '\\n'";
+						+" FIELDS TERMINATED BY ','  ENCLOSED BY '\"' LINES TERMINATED BY '\\r\\n'";
 		console.log("save data qry "+qryStr);
 		var self = this;
-		
+
 		conn.query(qryStr,function(err, results, fields){
 			if(err) console.log(err);
-			
+
 			files.list.push(fObj);
 			var percent = files.list.length*80.0/files.size;
 			progressCbk(percent*1.0, "Saving "+table_name);
 			console.log('result ', results);
 
 			console.log('num ', files.list.length, " nim ", files.size, "percent ", percent);
-			
+
 			if(files.size==files.list.length){
 				self.moveFilesToDestination(files, destination, linux);
 				var fileListStr = JSON.stringify(files);
@@ -190,53 +190,53 @@ var DbManager = function(){
 			}
 		});
 	}
-	
+
 	this.moveFilesToDestination = function(files, destination, linux){
-		
+
 		var cmd = '';
 		if(linux){
 
 			cmd += 'mv ';
 			console.log('moving files to destination '+destination);
-			
+
 			for(var i=0; i < files.list.length; i++){
 					cmd += '\"'+files.list[i].fileName+'\" '
-								
+
 			}
 			cmd+='\"'+destination+'\"';
 		}else{
 			console.log('moving files to destination '+destination);
-			
+
 			for(var i=0; i < files.list.length; i++){
 					cmd += 'move \"'+files.list[i].fileName+'\" '+ '\"'+destination+'\"';
 					if(i<files.list.length-1){
 						cmd+=' & '
 					}
 			}
-			
+
 		}
-		
+
 		console.log('command ', cmd);
 		sp.exec(cmd, {name: 'Fast Backup'}, function(err, sout, serr){
 			if(err) throw err;
 			console.log(new Date().getTime());
 			progressCbk(100.0, "Saved successfully");
 		});
-		
+
 	}
-	
+
 	this.saveCreateTable = function(db_name, table_name, stream){
-		
+
 		var qryStr = "SHOW CREATE TABLE "+db_name+'.'+ table_name;
 		var self = this;
 		console.log('in create table '+qryStr);
 		conn.query(qryStr,function(err, results, fields){
 			console.log('create table result ', results);
 			stream.write(results[0]['Create Table']+';\n');
-			
+
 		});
 	}
-	
+
 	this.getAllDatabases = function(cbk){
 		console.log('get all databases called');
 		conn.query("show databases", function (error, results, fields) {
@@ -250,29 +250,29 @@ var DbManager = function(){
 			  cbk(JSON.stringify(dataObj));
 		});
 
-		
+
 	}
-		
+
 
 	this.getDirectory = function(dbCallback){
 		console.log('Checking file priv directory');
-		
+
 		conn.query("show variables like 'secure_file_priv'", function (error, results, fields) {
 			if(error) throw error;
-			  
+
 			  var mysqlPath = results[0].Value;
 			  console.log('The solution is: ', mysqlPath);
 			dbCallback(mysqlPath);
 		});
 	}
-	
+
 	this.restoreDatabase = function(folderName, destination, dbName, callback){
 		console.log(new Date().getTime());
 		//Using nested callbacks. rather prefer using promises
 		var self = this;
 		self.loadPreImportScript(function (status){
 			fs.readFile(folderName+"/structure.sql", function(err, data){
-			
+
 				var qryData = 'use '+dbName+'; '+data;
 				//console.log('file data ', qryData);
 				conn.query(qryData, function (error, results, fields){
@@ -281,9 +281,9 @@ var DbManager = function(){
 					callback(15, "Imported Structure");
 					self.importData(folderName, destination, dbName, callback);
 				});
-			});	
+			});
 		});
-		
+
 	}
 
 	this.loadPreImportScript = function(callback){
@@ -304,7 +304,7 @@ var DbManager = function(){
 			});
 		});
 	}
-	
+
 	this.importData = function(folderName, destination, dbName, progressCbk){
 		console.log('import data '+folderName);
 		var self = this;
@@ -315,7 +315,7 @@ var DbManager = function(){
 			linux = false;
 		}
 		fs.readFile(folderName+'/files.json', function(err, data){
-			if(err)	
+			if(err)
 				throw err;
 			else{
 				var fileListStr = data;
@@ -333,7 +333,7 @@ var DbManager = function(){
 						fileData.tableName = tableName;
 						files.push(fileData);
 						cmd+='\"'+folderName+'/'+fileName+'\" ';
-						
+
 					}
 					cmd+='\"'+destination+'\"';
 
@@ -352,10 +352,8 @@ var DbManager = function(){
 							cmd+=' & '
 						}
 					}
-					
-
 				}
-								
+
 				//console.log('command for restore ', cmd);
 				//console.log('files to load data ', files);
 				progressCbk(30, 'Copying files');
@@ -363,8 +361,8 @@ var DbManager = function(){
 					if(err) throw err;
 					self.loadData(files, progressCbk);
 					progressCbk(35, "Copied files to mysql file directory");
-					
-					
+
+
 				});
 			}
 
@@ -373,22 +371,30 @@ var DbManager = function(){
 
 	this.loadData = function(files, progressCbk){
 		console.log('files ', files);
-		console.log(window.performance.now());
 		var qry ="";
-
+		var fileTrack = new Object();
+		fileTrack.completedCount = 0;
+		progressCbk(35, "Importing "+files[0].tableName);
+		console.log("Importing "+files[0].tableName);
 		for(var i=0; i < files.length; i++){
-			qry=" LOAD DATA INFILE '"+files[i].fileName.replace(/\\/g,'/')+"' INTO TABLE "+files[i].tableName+" FIELDS TERMINATED BY ',' ENCLOSED BY '\"' ESCAPED BY '' LINES TERMINATED BY '\\n'; commit;";
+			qry=" LOAD DATA INFILE '"+files[i].fileName.replace(/\\/g,'/')+"' INTO TABLE "+files[i].tableName+" FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\r\\n'; commit;";
 			//console.log('qry '+qry);
 			conn.query(qry, function(err, results, fields){
-				console.log('load data result', results);
-				progressCbk(100, "Database imported successfully");
+				fileTrack.completedCount++;
+				var percent = 35.0 + fileTrack.completedCount*65.0/files.length;
+				console.log('load data result '+files[fileTrack.completedCount-1].tableName, results);
+				progressCbk(percent, "Importing "+files[fileTrack.completedCount].tableName);
 				console.log(new Date().getTime());
-				
+				console.log(fileTrack.completedCount+" - "+files.length);
+				if(fileTrack.completedCount+1==files.length){
+					progressCbk(percent, "Database imported successfully");
+				}
+
 			});
 		}
-		
+
 	}
-	
+
 	this.createDatabase = function(dbName, dbCallback){
 		conn.query('create schema '+dbName, function(error, results, fields){
 			if(error) throw error;
@@ -396,11 +402,11 @@ var DbManager = function(){
 			dbCallback('successfully created');
 		});
 	}
-	
+
 }
 
 var Util = function(){
-	
+
 	this.clickBrowse = function(callback){
 		var elm = document.getElementById('selector');
 		elm.addEventListener('input', function(evt){
@@ -408,7 +414,7 @@ var Util = function(){
 		});
 		elm.click();
 	}
-	
+
 	this.close = function(){
 		var gui = require('nw.gui');
 		var win = gui.Window.get();
