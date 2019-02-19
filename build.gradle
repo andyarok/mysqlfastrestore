@@ -39,6 +39,10 @@ task copyResources{
 	}
 }
 
+task build(type: GradleBuild){
+	tasks = [':ui:buildAll', 'copyResources']
+}
+
 task compileNLaunch(type: GradleBuild){
 	tasks = [':ui:buildAll', 'copyResources', 'launchNodeWebKit']
 }

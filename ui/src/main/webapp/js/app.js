@@ -165,7 +165,7 @@ var DbManager = function(){
 		fObj.fileName = srcFolder+dbName+"_"+table_name+"_"+tStamp+".csv";
 		fObj.tableName = table_name; 
 		var qryStr = "SELECT * FROM "+dbName+"."+ table_name+" INTO OUTFILE '" + file_name + "' "
-						+" FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\\n'";
+						+" FIELDS TERMINATED BY ','  ENCLOSED BY '\"' ESCAPED BY '' LINES TERMINATED BY '\\n'";
 		console.log("save data qry "+qryStr);
 		var self = this;
 		
@@ -377,16 +377,16 @@ var DbManager = function(){
 		var qry ="";
 
 		for(var i=0; i < files.length; i++){
-			qry+=" LOAD DATA INFILE '"+files[i].fileName+"' INTO TABLE "+files[i].tableName+" FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\\n';";
-
+			qry=" LOAD DATA INFILE '"+files[i].fileName.replace(/\\/g,'/')+"' INTO TABLE "+files[i].tableName+" FIELDS TERMINATED BY ',' ENCLOSED BY '\"' ESCAPED BY '' LINES TERMINATED BY '\\n'; commit;";
+			//console.log('qry '+qry);
+			conn.query(qry, function(err, results, fields){
+				console.log('load data result', results);
+				progressCbk(100, "Database imported successfully");
+				console.log(new Date().getTime());
+				
+			});
 		}
-		console.log('qry '+qry);
-		conn.query(qry, function(err, results, fields){
-			console.log('load data result', results);
-			progressCbk(100, "Database imported successfully");
-			console.log(new Date().getTime());
-			
-		});
+		
 	}
 	
 	this.createDatabase = function(dbName, dbCallback){
