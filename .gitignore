@@ -10,3 +10,7 @@ ui/.classpath
 dist
 .project
 .settings
+main/build
+main/dist
+main/src
+main/cache
