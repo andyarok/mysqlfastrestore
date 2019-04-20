@@ -74,6 +74,12 @@ public class MainView extends Composite {
 		
 	}
 	
+	@UiHandler("cancelBtn")
+	void onCancelClick(ClickEvent evt) {
+		SelectionView sView = new SelectionView();
+		HomeView.setMainWidget(sView);
+	}
+	
 	@UiHandler("exitBtn")
 	void onExitClick(ClickEvent evt) {
 		GlobalReference.getUtil().close();

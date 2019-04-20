@@ -6,15 +6,17 @@
 	xmlns:ma="urn:import:gwt.material.design.addins.client" 
 	xmlns:f="urn:import:gwt.material.design.addins.client.fileuploader" xmlns:d="urn:import:com.google.gwt.dom.client">
 	<ui:style>
-		.mainContent{
-			padding-top: 10%;
+		.header{
+			padding-top:8%;
+		}
+		
+		.dataContainer{
+			overflow: auto;
+			height:350px;
 		}
 	</ui:style>
-	<m:MaterialPanel>
-		<m:MaterialHeader>
-		</m:MaterialHeader>
-		<m:MaterialContainer>
-			<m:MaterialPanel addStyleNames="{style.mainContent}">
+	<g:HTMLPanel>
+			<m:MaterialPanel addStyleNames="{style.header}">
 				<ma:stepper.MaterialStepper axis="HORIZONTAL" shadow="1" ui:field="stepper">
 					<ma:stepper.MaterialStep step="1" title="Browse for the file to restore" description="Browse for the folder containing the backup locations">
 							<m:MaterialPanel width="100%" >
@@ -47,7 +49,7 @@
 									<m:MaterialButton visible="false" ui:field="okBtn" text="ok" />
 								</m:MaterialColumn>
 							</m:MaterialRow>
-							<m:MaterialCollection ui:field="itemContainer" />
+							<m:MaterialCollection ui:field="itemContainer" addStyleNames="{style.dataContainer}" />
 					 		
 					 	</m:MaterialPanel>
 						<m:MaterialButton ui:field="restoreBtn" text="Select Destination" grid="l4" marginTop="12" textColor="WHITE" waves="DEFAULT"/>
@@ -64,9 +66,6 @@
 				
 				</ma:stepper.MaterialStepper>
 			
-			
 			</m:MaterialPanel>
-		
-		</m:MaterialContainer>
-	</m:MaterialPanel>
+		</g:HTMLPanel>		
 </ui:UiBinder> 

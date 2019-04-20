@@ -14,6 +14,7 @@
 		<m:MaterialPanel ui:field="mPanel" addStyleNames="{style.panel}">
 				<ma:circularprogress.MaterialCircularProgress ui:field="progressLabel" value="0.01" thickness="20" grid="s12 m4 l3"/>
 				<m:MaterialLabel ui:field="osLabel" text="Launching"></m:MaterialLabel>
+				<m:MaterialDialog ui:field="dialog" dismissible="false"></m:MaterialDialog>
 		</m:MaterialPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

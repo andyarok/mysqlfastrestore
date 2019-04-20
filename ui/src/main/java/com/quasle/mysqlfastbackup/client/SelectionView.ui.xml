@@ -4,17 +4,16 @@
 	<ui:style>
 		.selectContent{
 			text-align: center;
-			padding-top: 10%;
+			margin-top: 8%;
 		}
 	</ui:style>
 	<m:MaterialPanel>
 		<m:MaterialHeader>
-			<!-- <m:MaterialNavBar>
-				<m:MaterialNavBrand title="MySql Fast Backup and Restore">
+			 <m:MaterialNavBar>
+				<m:MaterialNavBrand text="What would you like to do?">
 					
 				</m:MaterialNavBrand>
-			</m:MaterialNavBar> -->
-			<m:MaterialLabel text="What would you like to do?"></m:MaterialLabel>
+			</m:MaterialNavBar>
 		</m:MaterialHeader>
 		<m:MaterialContainer addStyleNames="{style.selectContent}">
 			<m:MaterialRow>

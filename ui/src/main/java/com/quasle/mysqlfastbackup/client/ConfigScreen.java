@@ -5,9 +5,12 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import com.quasle.mysqlfastbackup.client.util.Logger;
 
 import gwt.material.design.addins.client.circularprogress.MaterialCircularProgress;
+import gwt.material.design.addins.client.circularprogress.events.CompleteEvent;
 import gwt.material.design.addins.client.circularprogress.events.StartEvent;
+import gwt.material.design.client.ui.MaterialDialog;
 import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialToast;
 import jsinterop.annotations.JsMethod;
@@ -19,10 +22,22 @@ public class ConfigScreen extends Composite {
 
 	private static ConfigScreenUiBinder uiBinder = GWT.create(ConfigScreenUiBinder.class);
 
+	private static String userName;
+
+	private static String password;
+
+	private static String dbName;
+
 	interface ConfigScreenUiBinder extends UiBinder<Widget, ConfigScreen> {
 	}
 
 	private boolean launched = false;
+	
+	private Config cfg = null;
+	private MysqlConfigView configView = null;
+	
+	@UiField
+	MaterialDialog dialog;
 	
 	public ConfigScreen() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -46,7 +61,41 @@ public class ConfigScreen extends Composite {
 	MaterialCircularProgress progressLabel; 
 			
 	public void updateStatus(String status) {
+		Logger.consoleLog("status "+status);
 		osLabel.setText(status);
+		if(status.equals("Error connecting to database")) {
+			configView.setError(status);
+		}else if(status.equalsIgnoreCase("Connected to database")) {
+			dialog.close();
+			DbManager man = new DbManager();
+			man.setConnectionCallback(new DbManager.ConnectionSuccessCallback() {
+				
+				@Override
+				public void onSuccess() {
+					HomeView.setMainWidget(new SelectionView());
+				}
+								
+			}, new DbManager.ConnectionFailureCallback() {
+				
+				
+				@Override
+				public void onFailure() {
+					showConfigPopup();
+				}
+					
+				
+			});
+			progressLabel.addCompleteHandler(new CompleteEvent.CompleteHandler() {
+				
+				@Override
+				public void onComplete(CompleteEvent event) {
+					man.createConnection(userName, password, dbName);
+				}
+			});
+			
+			GlobalReference.setDbManager(man);
+		}
+		
 	}
 		
 	public void setProgress(double progress) {
@@ -55,24 +104,49 @@ public class ConfigScreen extends Composite {
 	
 	public void createConnection() {
 		DbManager man = new DbManager();
-		man.setObject(this);
+		man.setConnectionCallback(new DbManager.ConnectionSuccessCallback() {
+			
+			@Override
+			public void onSuccess() {
+				Logger.consoleLog("connection success");
+				HomeView.setMainWidget(new SelectionView());
+			}
+							
+		}, new DbManager.ConnectionFailureCallback() {
+			
+			
+			@Override
+			public void onFailure() {
+				Logger.consoleLog("connection failed");
+				showConfigPopup();
+			}
+				
+			
+		});
 		GlobalReference.setDbManager(man);
 		man.parseConfig();
 		
 	}
 	
-	public void onSuccessfullConnect() {
-		//Potentially cross polluting codes. Need callback rather than this method being used in javascript.
-		//Ideally, a callback has to be passed 
-		HomeView.setMainWidget(new SelectionView());
+	public static void setConnectionParameters(String userName, String password, String dbName) {
+		ConfigScreen.userName = userName;
+		ConfigScreen.password = password;
+		ConfigScreen.dbName = dbName;
 	}
+		
 	
 	public void showConfigPopup(){
 		
+		configView = new MysqlConfigView();
+		configView.setConfig(cfg);
+		dialog.add(configView);
+		dialog.getElement().getStyle().setProperty("border-radius", "7px");
+		dialog.open();
 	}
 		
 	private void loadInfo() {
-		Config cfg = new Config();
+		Logger.consoleLog("loading info");
+		cfg = new Config();
 		cfg.setObject(this);
 		cfg.checkConfig();
 	}

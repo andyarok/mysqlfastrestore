@@ -6,23 +6,23 @@
 	xmlns:ma="urn:import:gwt.material.design.addins.client" 
 	xmlns:f="urn:import:gwt.material.design.addins.client.fileuploader" xmlns:d="urn:import:com.google.gwt.dom.client">
 	<ui:style>
-		.mainContent{
-			padding-top: 10%;
+		.header{
+			padding-top:8%;
+		}
+		
+		.dataContainer{
+			overflow: auto;
 		}
 	</ui:style>
-	<m:MaterialPanel>
-		<m:MaterialHeader>
-
-		</m:MaterialHeader>
-		<m:MaterialContainer>
-			<m:MaterialPanel addStyleNames="{style.mainContent}">
+	<g:HTMLPanel>
+			<m:MaterialPanel addStyleNames="{style.header}">
 				<ma:stepper.MaterialStepper axis="HORIZONTAL" shadow="1" ui:field="stepper">
 				<ma:stepper.MaterialStep step="1" title="Select Database" description="Select database(s) to backup">
 						<m:MaterialPanel width="100%" >
-					 		<m:MaterialCollection ui:field="itemContainer" />
+					 		<m:MaterialCollection ui:field="itemContainer" addStyleNames="{style.dataContainer}" />
 					 	</m:MaterialPanel>
-						<m:MaterialButton ui:field="nextBtn" text="Select Destination" grid="l4" marginTop="12" textColor="WHITE" waves="DEFAULT"/>
-						<m:MaterialButton ui:field="cancelBtn" text="Cancel" grid="l4" marginTop="12" type="FLAT" waves="DEFAULT"/>
+						<m:MaterialButton ui:field="nextBtn" text="Select Destination" grid="l4" marginLeft="20" marginTop="20" textColor="WHITE" waves="DEFAULT"/>
+						<m:MaterialButton ui:field="cancelBtn" text="Cancel" grid="l4" marginLeft="20" marginTop="20" textColor="WHITE" waves="DEFAULT"/>
 				</ma:stepper.MaterialStep>
 				<ma:stepper.MaterialStep step="2" title="Select Destination" description="Select destination to save backup">
 						<m:MaterialPanel width="100%" >
@@ -53,6 +53,5 @@
 				</ma:stepper.MaterialStep>
 				</ma:stepper.MaterialStepper>
  			</m:MaterialPanel>
-		</m:MaterialContainer>
-	</m:MaterialPanel>
+	</g:HTMLPanel>
 </ui:UiBinder> 

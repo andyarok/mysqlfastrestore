@@ -8,11 +8,9 @@ var Config = function(){
 		console.log('Checking config');
 		fs.access('config.json', fs.constants.F_OK, function(err) {
   			if(err){
-  				self.createConfig();
+  				obj.showConfigPopup();
   			}else{
-  				console.log('debug 1 ',obj);
   				obj.createConnection();
-  				console.log('debug 2');
 			}
 		});
 
@@ -22,7 +20,7 @@ var Config = function(){
 		obj = gwtObj;
 	}
 
-	this.createConfig = function(){
+	/*this.createConfig = function(username, password){
 		console.log('Config File does not exist ', obj);
 		var msg = 'Configuring your application';
 		var self = this;
@@ -31,8 +29,8 @@ var Config = function(){
 		var connection = mysql.createConnection({
 		  host     : 'localhost',
 		  user     : 'root',
-		  password : 'andyflow',
-		  database : 'privatecloud'
+		  password : 'root',
+		  database : ''
 		});
 
 		connection.connect(function(err){
@@ -40,11 +38,36 @@ var Config = function(){
 				console.log('error connecting to database');
 			}else{
 				console.log('connected successfully');
-				self.writeConfig('root', 'andyflow','localhost', 'privatecloud');
+				self.writeConfig('root', 'andyflow','localhost', '');
 				obj.updateStatus('Connected to database');
 				obj.setProgress(1.00);
 			}
 		});
+	}*/
+	
+	this.testConnection = function(user_name, password, database, remember){
+		var self = this;
+		var connection = mysql.createConnection({
+			  host     : 'localhost',
+			  user     : user_name,
+			  password : password,
+			  database : database
+		});
+		connection.connect(function(err){
+			if(err){
+				console.log('error connecting to database');
+				obj.updateStatus("Error connecting to database");
+				obj.setProgress(0.25);
+			}else{
+				if(remember)
+					self.writeConfig(user_name, password,'localhost', database);
+				obj.updateStatus('Connected to database');
+				obj.setProgress(1.00);
+				connection.close();
+				
+			}
+		});
+		
 	}
 
 
@@ -71,11 +94,12 @@ var Config = function(){
 var DbManager = function(){
 
 	var conn = null;
-	var obj = null;
 	var fs = require('fs');
 	var mysql = require('mysql');
 	var sp = require('sudo-prompt');
 	var progressCbk = null;
+	var connSuccessCbk = null;
+	var connFailureCbk = null;
 
 	this.parseConfig = function(){
 		var self = this;
@@ -87,26 +111,27 @@ var DbManager = function(){
 				console.log(configStr);
 				var configObj = JSON.parse(configStr);
 				console.log('parsing config file ', configObj.database);
-				self.createConnection(configObj.user, configObj.password, configObj.host, configObj.database);
+				self.createConnection(configObj.user, configObj.password, configObj.database);
 			}
 
 		});
 	}
-
-	this.setObject = function(gwtObj){
-		obj = gwtObj;
-		console.log('set object called ', obj);
-	}
+	
 
 	this.setSaveProgressCallback = function(callbackObj){
 		progressCbk = callbackObj;
 	}
+	
+	this.setConnectionCallback = function(successCbk, failureCbk){
+		connSuccessCbk = successCbk;
+		connFailureCbk = failureCbk;
+	}
 
-	this.createConnection = function(puser, ppassword, phost, pdatabase){
+	this.createConnection = function(puser, ppassword, pdatabase){
 		console.log('Creating connection');
 		var self = this;
 		conn = mysql.createConnection({
-			  host     : phost,
+			  host     : 'localhost',
 			  user     : puser,
 			  password : ppassword,
 			  database : pdatabase,
@@ -115,11 +140,15 @@ var DbManager = function(){
 		conn.connect(function(err){
 			if(err){
 				console.log('error connecting to database');
+				if(connFailureCbk){
+					connFailureCbk();
+				}
 			}else{
-				console.log('connected successfully after parsing', obj);
-				obj.updateStatus('Connected to database');
-				obj.setProgress(1.00);
-				obj.onSuccessfullConnect();
+				console.log('connected successfully after parsing');
+				if(connSuccessCbk){
+					connSuccessCbk();
+				}
+				
 			}
 		});
 

@@ -11,4 +11,6 @@ public class Config {
 	public native void checkConfig();
 	@JsMethod
 	public native void setObject(ConfigScreen screen);
+	@JsMethod
+	public native void testConnection(String username, String password, String database, boolean remember);
 }
