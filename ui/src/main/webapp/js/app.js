@@ -388,8 +388,9 @@ var DbManager = function(){
 				progressCbk(30, 'Copying files');
 				sp.exec(cmd, {name: 'Fast Backup'}, function(err, sout, serr){
 					if(err) throw err;
-					self.loadData(files, progressCbk);
 					progressCbk(35, "Copied files to mysql file directory");
+					self.loadData(files, progressCbk);
+					
 
 
 				});
