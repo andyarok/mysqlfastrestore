@@ -8,7 +8,7 @@ version = '1.0'
 
 task launchNodeWebKit(type: Exec){
 	workingDir './nwjs-sdk-v0.35.5-linux-x64'
-	commandLine './nw', '../dist'
+	commandLine './nw', '../build'
 }
 
 task clean(type: Delete){
@@ -16,6 +16,12 @@ task clean(type: Delete){
 	delete 'dist/home'
 	delete 'dist/js'
 	delete 'package.json'
+	delete 'tmp'
+}
+
+clean{
+	delete 'build'
+	delete 'dist'
 }
 
 task copyResources{
@@ -23,26 +29,62 @@ task copyResources{
 		copy{
 			from "main/src"
 			include '**'
-			into "dist"
+			into "build"
 		}
-		/*copy{
-			from "main/node_modules"
-			into "dist/node_modules"
-		}*/
+
 		copy{
 			from 'ui/build/'
 			include 'index.html', 'home/**', 'js/**', '*.sql'
-			into 'dist'
+			into 'build'
 		}
-		
-	
+
+
 	}
+}
+
+task copyNodeModules{
+	doLast{
+		copy{
+			from "main/node_modules"
+			into "build/node_modules"
+		}
+	}
+
 }
 
 task build(type: GradleBuild){
 	tasks = [':ui:buildAll', 'copyResources']
 }
 
-task compileNLaunch(type: GradleBuild){
-	tasks = [':ui:buildAll', 'copyResources', 'launchNodeWebKit']
+task testApp(type: GradleBuild){
+	tasks = [':ui:buildAll', 'copyResources', 'copyNodeModules','launchNodeWebKit']
 }
+
+task prepareDist{
+	doLast{
+		mkdir 'tmp'
+
+		copy{
+				from 'main'
+				include 'package.json', 'node_modules/**'
+				into 'tmp'
+
+		}
+
+		copy{
+			from 'main'
+			include 'build.js'
+			into 'tmp'
+		}
+
+	}
+
+}
+
+task generateDist(type: Exec){
+	workingDir 'tmp'
+	commandLine 'node', 'build.js'
+}
+
+generateDist.dependsOn build
+generateDist.dependsOn prepareDist

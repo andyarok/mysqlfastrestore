@@ -10,7 +10,7 @@
     "nw-builder": "^3.5.7"
   },
   "scripts": {
-    "dev": "nw src/",
-    "prod": "nwbuild -p linux64 --buildDir dist/ src/"
+    "dev": "nw build/",
+    "prod": "nwbuild -p linux64 --buildDir ../dist ../build"
   }
 }
