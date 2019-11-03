@@ -1,0 +1,21 @@
+{
+  "main": "index.html",
+  "name": "MysqlFastBackup",
+  "version": "0.1.0",
+  "app-id": "com.quantalept.mysqlfastbackup",
+  "chromium-args": "--disable-setuid-sandbox",
+  "window": {
+    "width": 800,
+    "height": 600,
+    "title": "Mysql Fast Backup and Restore",
+    "icon": "icons/icon.png",
+    "toolbar": false,
+    "show": false
+  },
+  "webkit": {
+    "plugin": true
+  },
+  "dependencies": {
+    "materialize-css": "^1.0.0"
+  }
+}

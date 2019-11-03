@@ -1,0 +1,26 @@
+{
+  "name": "mysqlfastbackup",
+  "version": "1.0.0",
+  "description": "An utility to backup mysql databases as csv and restore them",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "(cd src && npm install)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andyarok/mysqlfastbackup.git"
+  },
+  "keywords": [
+    "javascript",
+    "mysql",
+    "backup",
+    "restore"
+  ],
+  "author": "Andy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andyarok/mysqlfastbackup/issues"
+  },
+  "homepage": "https://github.com/andyarok/mysqlfastbackup#readme"
+}
