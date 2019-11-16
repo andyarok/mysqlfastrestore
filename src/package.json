@@ -10,12 +10,14 @@
     "title": "Mysql Fast Backup and Restore",
     "icon": "icons/icon.png",
     "toolbar": false,
-    "show": false
+    "show": true
   },
   "webkit": {
     "plugin": true
   },
   "dependencies": {
-    "materialize-css": "^1.0.0"
+    "lit-element": "^2.2.1",
+    "materialize-css": "^1.0.0",
+    "mysql": "^2.17.1"
   }
 }
