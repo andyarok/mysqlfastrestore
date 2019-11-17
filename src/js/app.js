@@ -47,7 +47,7 @@ var Config = function(){
 		});
 	}*/
 
-	this.testConnection = function(user_name, password, database, remember){
+	this.saveConnection = function(user_name, password, database, remember){
 		var self = this;
 		var connection = mysql.createConnection({
 			  host     : 'localhost',
@@ -59,12 +59,10 @@ var Config = function(){
 			if(err){
 				console.log('error connecting to database');
 				obj.updateStatus("Error connecting to database");
-				obj.setProgress(0.25);
 			}else{
 				if(remember)
 					self.writeConfig(user_name, password,'localhost', database);
 				obj.updateStatus('Connected to database');
-				obj.setProgress(1.00);
 				connection.close();
 
 			}
