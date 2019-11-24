@@ -47,13 +47,16 @@ var Config = function(){
 		});
 	}*/
 
-	this.saveConnection = function(user_name, password, database, remember){
+	this.saveConnection = function(user_name, password, host_port, database, remember){
 		var self = this;
+		var host = host_port.substring(0, host_port.indexOf(':'));
+		var port = host_port.substring(host_port.indexOf(':')+1);
 		var connection = mysql.createConnection({
-			  host     : 'localhost',
+			  host     : host,
 			  user     : user_name,
 			  password : password,
-			  database : database
+			  database : database,
+				port: port
 		});
 		connection.connect(function(err){
 			if(err){
@@ -61,7 +64,7 @@ var Config = function(){
 				obj.updateStatus("Error connecting to database");
 			}else{
 				if(remember)
-					self.writeConfig(user_name, password,'localhost', database);
+					self.writeConfig(user_name, password,host_port, database);
 				obj.updateStatus('Connected to database');
 				connection.close();
 
@@ -72,9 +75,9 @@ var Config = function(){
 
 
 
-	this.writeConfig = function(user, password, host, database){
+	this.writeConfig = function(user, password, host_port, database){
 		var configObj = new Object();
-		configObj.host = host;
+		configObj.host_port = host_port;
 		configObj.user = user;
 		configObj.password = password;
 		configObj.database = database;
@@ -276,7 +279,7 @@ var DbManager = function(){
 			  for(var i=0; i < results.length;i++ ){
 				  dataObj.databases.push(results[i].Database);
 			  }
-			  cbk(JSON.stringify(dataObj));
+			  cbk(dataObj);
 		});
 
 
