@@ -30,7 +30,22 @@ function ConfigCallback(){
 }
 
 cfg.setObject(new ConfigCallback());
-cfg.checkConfig();
+var localStorage = window.localStorage;
+if(localStorage.getItem('user_name')){
+  document.addEventListener('DOMContentLoaded', (event) => {
+    var elem = document.querySelector('.loader');
+    elem.parentNode.removeChild(elem);
+    document.querySelector('#selection').style.display="block";
+    //the event occurred
+  });
+
+  //nothing to do. backup.js will handle connection from localStorage
+}else{
+  cfg.checkConfig();
+}
+
+
+
 
 function onKeyPress(evt){
   if(evt.keyCode==13){

@@ -1,10 +1,11 @@
 var dbListElm = document.getElementById('databaseList');
 var dbMan = new DbManager();
 var selectedDbNames = new Array();
-
+var mysqlDir;
 
 function onConnectionSuccess(){
   dbMan.getAllDatabases((obj)=>populateDatabases(obj));
+  dbMan.getDirectory((path)=> mysqlDir = path);
 }
 
 
@@ -40,8 +41,7 @@ function onDbSelectNext(){
   var selectedList = elm.querySelectorAll('.collection-item.selected');
 
   for(var i=0; i < selectedList.length; i++){
-    console.log(selectedList[i]);
-    selectedDbNames.push(selectedList[i]);
+    selectedDbNames.push(selectedList[i].innerText);
   }
 
   elm.style.display = 'none';
@@ -51,10 +51,25 @@ function onDbSelectNext(){
 }
 
 function onSaveClick(){
+  document.getElementById('saveBtn').style.display='none';
   var filePath = document.getElementById('filePath').value;
+
   if(!filePath){
     var toastHTML = '<span>File path is invalid</span>';
-    //M.toast({html: toastHTML});
+    M.toast({html: toastHTML});
+  }else{
+
+    console.log('saving db ', selectedDbNames, mysqlDir, filePath);
+    dbMan.setSaveProgressCallback(function(percent, text){
+      var progress = document.getElementById('progress');
+      progress.setAttribute('class', 'c100 p'+percent);
+      progress.firstElementChild.innerText=percent;
+      if(percent==100){
+        setTimeout(function(){window.location = 'index.html'}, 2000);
+      }
+    });
+    dbMan.saveDatabase(selectedDbNames[0], mysqlDir, filePath);
+
   }
 }
 
