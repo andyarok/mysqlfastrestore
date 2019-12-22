@@ -23,5 +23,8 @@
     "url": "https://github.com/andyarok/mysqlfastbackup/issues"
   },
   "homepage": "https://github.com/andyarok/mysqlfastbackup#readme",
-  "devDependencies": {}
+  "devDependencies": {
+    "nw": "^0.43.2"
+  },
+  "dependencies": {}
 }

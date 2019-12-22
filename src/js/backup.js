@@ -1,7 +1,17 @@
-var dbListElm = document.getElementById('databaseList');
+
 var dbMan = new DbManager();
 var selectedDbNames = new Array();
 var mysqlDir;
+var dbListElm;
+
+window.addEventListener('load', function() {
+    console.log('All contents are loaded');
+    init();
+});
+
+function init(){
+  dbListElm = document.getElementById('databaseList');
+}
 
 function onConnectionSuccess(){
   dbMan.getAllDatabases((obj)=>populateDatabases(obj));

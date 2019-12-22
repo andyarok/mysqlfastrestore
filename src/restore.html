@@ -22,40 +22,60 @@
     </header>
 
     <main>
-      <ul id="databaseList" class="collection with-header">
-        <li class="collection-header"><h5>Database to restore</h5></li>
 
-      </ul>
-      <div id="restoreProgress" style="display: none; margin-top: 60px;">
+      <div id="folderSelection" style="display: block; margin-top: 60px;">
+        <h5>Select Source  Folder</h5>
         <div class="row">
           <div >
-            <div style="float: right; margin-right:20px; background-color: #2196F3" class="btn-small">
-              <span onclick="this.nextElementSibling.click()">Browse</span>
+            <div onclick="this.lastElementChild.click()" style="float: right; margin-right:20px; background-color: #2196F3" class="btn-small">
+              <span >Browse</span>
               <input style="display:none;" onchange="updateFolder(this)" type="file" nwdirectory="">
             </div>
             <input style="float:right;" class="col s10" id="filePath" type="text">
-
-
-          </div>
-          </div>
-          <div class="row">
-            <div class="progress-container">
-              <div class="c100 p0" id="progress" style="float:none; margin:0 auto;">
-                <span>0%</span>
-                <div class="slice">
-                  <div class="bar"></div>
-                  <div class="fill"></div>
-                </div>
-              </div>
             </div>
           </div>
-
-
-
       </div>
+      <div id="databaseSelection" style="display:none;">
+        <ul id="databaseList" class="collection with-header" >
+          <li class="collection-header"><h5>Select destination Database</h5></li>
+
+        </ul>
+        <div>
+          <div class="horizontal-child">
+            <a class="color-btn btn-floating btn-large" id="addBtn">
+              <i class="large material-icons">add</i>
+            </a>
+          </div>
+          <div id="addList" class="horizontal-child" style="display:none;" >
+            <div class="horizontal-child">
+              <input id="dbName" type="text">
+            </div>
+            <div class="horizontal-child">
+              <a id="saveDb" class="color-btn btn-floating btn-large">
+                <i class="large material-icons">save</i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" id="progressContainer" style="display:none;">
+        <h5>Progress</h5>
+        <div class="progress-container">
+          <div class="c100 p0" id="progress" style="float:none; margin:0 auto;">
+            <span>0%</span>
+            <div class="slice">
+              <div class="bar"></div>
+              <div class="fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </main>
     <footer class="footer">
-      <a id="restoreBtn" class="btn-small waves-effect waves-light" onclick="onSaveClick()" style="background-color:#2196F3; display:none;">Restore</a>
+      <a id="restoreBtn" class="btn-small waves-effect waves-light" style="background-color:#2196F3; display:none;">Restore</a>
+      <a id="nextBtn" class="btn-small waves-effect waves-light" style="background-color:#2196F3; display:inline-block;">Next</a>
     </footer>
 
 
