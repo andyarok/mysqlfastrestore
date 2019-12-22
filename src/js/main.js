@@ -29,6 +29,19 @@ function ConfigCallback(){
   }
 }
 
+window.addEventListener('load', function() {
+    console.log('All contents are loaded');
+    init();
+});
+
+function init(){
+  document.getElementById('restoreBtn').onclick = function(){
+    window.location = 'restore.html';
+  }
+
+
+}
+
 cfg.setObject(new ConfigCallback());
 var localStorage = window.localStorage;
 if(localStorage.getItem('user_name')){

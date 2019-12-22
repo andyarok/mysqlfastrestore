@@ -29,8 +29,8 @@
       <div id="saveProgress" style="display: none; margin-top: 60px;">
         <div class="row">
           <div >
-            <div style="float: right; margin-right:20px; background-color: #2196F3" class="btn-small">
-              <span onclick="this.nextElementSibling.click()">Browse</span>
+            <div onclick="this.lastElementChild.click()" style="float: right; margin-right:20px; background-color: #2196F3" class="btn-small">
+              <span>Browse</span>
               <input style="display:none;" onchange="updateFolder(this)" type="file" nwdirectory="">
             </div>
             <input style="float:right;" class="col s10" id="filePath" type="text">

@@ -96,3 +96,21 @@ body {
 main {
   flex: 1 0 auto;
 }
+
+#addList li{
+  float: left;
+}
+
+.horizontal-child{
+  float:left;
+  margin-left: 20px;
+}
+
+.color-btn{
+  background-color: #2196F3;
+}
+
+#statusText{
+  font-size: large;
+  text-align: center;
+}
