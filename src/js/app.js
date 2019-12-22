@@ -299,8 +299,10 @@ var DbManager = function(){
 	}
 
 	this.restoreDatabase = function(folderName, destination, dbName, callback){
-		console.log(new Date().getTime());
+		console.log('start time', new Date().getTime());
 		//Using nested callbacks. rather prefer using promises
+		console.debug('folderName ', folderName, 'destination ', destination,'dbname ', dbName);
+
 		var self = this;
 		self.loadPreImportScript(function (status){
 			fs.readFile(folderName+"/structure.sql", function(err, data){
@@ -311,7 +313,8 @@ var DbManager = function(){
 					if(error) throw error;
 					//console.log('Import of db structure result is: ', results);
 					callback(15, "Imported Structure");
-					self.importData(folderName, destination, dbName, callback);
+					self.importData(folderName, destination, callback);
+
 				});
 			});
 		});
@@ -337,7 +340,7 @@ var DbManager = function(){
 		});
 	}
 
-	this.importData = function(folderName, destination, dbName, progressCbk){
+	this.importData = function(folderName, destination, progressCbk){
 		console.log('import data '+folderName);
 		var self = this;
 		var os = require('os');
@@ -414,12 +417,14 @@ var DbManager = function(){
 			//console.log('qry '+qry);
 			conn.query(qry, function(err, results, fields){
 				fileTrack.completedCount++;
-				var percent = 35.0 + fileTrack.completedCount*65.0/files.length;
+				var percent = 35.0 + (fileTrack.completedCount+1)*65.0/files.length;
 				console.log('load data result '+files[fileTrack.completedCount-1].tableName, results);
 				progressCbk(percent, "Importing "+files[fileTrack.completedCount].tableName);
 				console.log(new Date().getTime());
-				console.log(fileTrack.completedCount+" - "+files.length);
-				if(fileTrack.completedCount+1==files.length){
+				console.log(fileTrack.completedCount+" - "+files.length+" - "+ percent);
+				if((fileTrack.completedCount+1)==files.length){
+					percent = 100;
+					console.log('completed successfully');
 					progressCbk(percent, "Database imported successfully");
 				}
 

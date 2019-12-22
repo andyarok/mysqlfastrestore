@@ -25,7 +25,7 @@ function populateDatabases(obj){
     var elm = document.getElementById('databaseList');
     var liElm = document.createElement('li');
     liElm.setAttribute('class', 'collection-item');
-    liElm.setAttribute('onclick', 'onDbSelect(this)')
+    liElm.setAttribute('onclick', 'onDbSelect(this)');
     liElm.innerText = item;
     elm.appendChild(liElm);
 
@@ -71,6 +71,7 @@ function onSaveClick(){
 
     console.log('saving db ', selectedDbNames, mysqlDir, filePath);
     dbMan.setSaveProgressCallback(function(percent, text){
+      percent = Math.round(percent);
       var progress = document.getElementById('progress');
       progress.setAttribute('class', 'c100 p'+percent);
       progress.firstElementChild.innerText=percent;

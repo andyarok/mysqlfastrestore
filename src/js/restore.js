@@ -1,10 +1,14 @@
 var dbMan = new DbManager();
 var connectionSucceeded = false;
 var mysqlDir;
+var selectedDbNames = new Array();
+var sourceDir;
 
-const FOLDER_SECTION = 1;
+const FOLDER_SELECTION = 1;
 const DB_SELECTION = 2;
 const PROGRESS = 3;
+
+var currentPage = FOLDER_SELECTION;
 
 
 window.addEventListener('load', function() {
@@ -14,7 +18,10 @@ window.addEventListener('load', function() {
 
 function init(){
   document.getElementById('nextBtn').addEventListener('click', function(){
-    showDatabases();
+    if(document.getElementById('nextBtn').text==='Next')
+      onNextClick();
+    else
+      window.location = "index.html";
   });
 
   dbMan.setConnectionCallback(onConnectionSuccess, null);
@@ -67,14 +74,17 @@ function showDatabases(){
 
 function showPage(pageNum){
   if(pageNum == DB_SELECTION){
+    currentPage = DB_SELECTION;
     document.getElementById('databaseSelection').style.display = 'block';
     document.getElementById('progressContainer').style.display = 'none';
     document.getElementById('folderSelection').style.display = 'none';
   }else if(pageNum == PROGRESS){
+    currentPage = PROGRESS;
     document.getElementById('databaseSelection').style.display = 'none';
     document.getElementById('progressContainer').style.display = 'block';
     document.getElementById('folderSelection').style.display = 'none';
   }else{
+    currentPage = FOLDER_SELECTION;
     document.getElementById('databaseSelection').style.display = 'none';
     document.getElementById('progressContainer').style.display = 'none';
     document.getElementById('folderSelection').style.display = 'block';
@@ -99,6 +109,48 @@ function addDbToList(item){
   elm.appendChild(liElm);
 }
 
+function onDbSelect(elm){
+  var selectedElm = document.querySelector('.collection-item.selected');
+  if(selectedElm){
+    selectedElm.setAttribute('class', 'collection-item');
+  }
+  if(elm.getAttribute('class').indexOf('selected')>-1){
+    elm.setAttribute('class', 'collection-item');
+  }else{
+    elm.setAttribute('class', 'collection-item selected');
+  }
+
+  console.log('clicked db ', elm.innerText);
+}
+
+function onNextClick(){
+  if(currentPage==FOLDER_SELECTION){
+    sourceDir = document.getElementById('filePath').value;
+    showPage(DB_SELECTION);
+    showDatabases();
+  }
+  else if(currentPage == DB_SELECTION){
+    var selectedElm = document.querySelector('.collection-item.selected');
+    selectedDbNames.push(selectedElm.innerText);
+    showPage(PROGRESS);
+    var startTime = new Date().getTime();
+    dbMan.restoreDatabase(sourceDir, mysqlDir, selectedDbNames[0], function(percent, text){
+      var progress = document.getElementById('progress');
+      percent = Math.round(percent);
+      progress.setAttribute('class', 'c100 p'+percent);
+      progress.firstElementChild.innerText=percent;
+      document.getElementById('statusText').innerText = text;
+      if(percent==100){
+        var endTime  = new Date().getTime();
+        var timeTaken = endTime - startTime;
+        timeTaken = timeTaken/1000;
+        console.log('time taken ', timeTaken);
+        document.getElementById('statusText').innerText = text+" in "+timeTaken.toFixed(3)+" seconds";
+        document.getElementById('nextBtn').text = 'Home';
+      }
+    });
+  }
+}
 
 function updateFolder(elm){
   var path = elm.files[0].path;
