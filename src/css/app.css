@@ -1,0 +1,116 @@
+
+.loader{
+  margin-top: 30vh;
+  margin-left: 30vw;
+  width:40vw;
+  text-align: center;
+}
+
+.config-header{
+  text-align: center;
+  font-weight: bolder;
+  font-size: 1.2em;
+  padding: 10px 0px 10px 0px;
+}
+
+.input-field label {
+  color: #0091d8;
+}
+
+::placeholder{
+  color: #949494;
+}
+
+#status{
+  color:red;
+  padding-right: 25%;
+}
+
+.icons{
+  font-size:6em;
+  padding: 50px;
+  display: block;
+  color: #2196F3;
+  cursor: pointer;
+
+}
+
+.icons span{
+  font-size: 2em;
+}
+
+.icon-box{
+  display: inline-block;
+  border-radius: 7px;
+  -webkit-box-shadow: 5px 5px 21px 5px lightgrey;
+  box-shadow: 5px 5px 21px 5px lightgrey;
+  margin: 80px 50px;
+}
+
+.icon-box:hover{
+  -webkit-box-shadow: 5px 5px 8px 5px lightgrey;
+  box-shadow: 5px 5px 8px 5px lightgrey;
+}
+
+.icon-box span{
+  display: block;
+  padding-bottom: 20px;
+}
+
+.collection-item:hover{
+  background-color: #7db3de;
+}
+
+.selected{
+  background-color: #2196F3 !important;
+}
+
+.footer{
+  margin-right: 20px;
+  text-align: right;
+  margin-bottom: 40px;
+}
+
+#selection{
+  top:30vh;
+}
+
+.browse-wrap{
+  display: inline-block;
+  float:left;
+  width: 80vw;
+  padding-right: 50px;
+}
+
+.progress-container{
+  margin-top: 80px;
+  text-align: center;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+#addList li{
+  float: left;
+}
+
+.horizontal-child{
+  float:left;
+  margin-left: 20px;
+}
+
+.color-btn{
+  background-color: #2196F3;
+}
+
+#statusText{
+  font-size: large;
+  text-align: center;
+}

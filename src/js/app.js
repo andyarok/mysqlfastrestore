@@ -7,7 +7,10 @@ var Config = function(){
 		var self = this;
 		console.log('Checking config');
 		fs.access('config.json', fs.constants.F_OK, function(err) {
+				console.log("error! no config", typeof(obj));
+				console.log(err);
   			if(err){
+					console.log('debugger');
   				obj.showConfigPopup();
   			}else{
   				obj.createConnection();
@@ -32,7 +35,6 @@ var Config = function(){
 		  password : 'root',
 		  database : ''
 		});
-
 		connection.connect(function(err){
 			if(err){
 				console.log('error connecting to database');
@@ -44,37 +46,38 @@ var Config = function(){
 			}
 		});
 	}*/
-	
-	this.testConnection = function(user_name, password, database, remember){
+
+	this.saveConnection = function(user_name, password, host_port, database, remember){
 		var self = this;
+		var host = host_port.substring(0, host_port.indexOf(':'));
+		var port = host_port.substring(host_port.indexOf(':')+1);
 		var connection = mysql.createConnection({
-			  host     : 'localhost',
+			  host     : host,
 			  user     : user_name,
 			  password : password,
-			  database : database
+			  database : database,
+				port: port
 		});
 		connection.connect(function(err){
 			if(err){
 				console.log('error connecting to database');
 				obj.updateStatus("Error connecting to database");
-				obj.setProgress(0.25);
 			}else{
 				if(remember)
-					self.writeConfig(user_name, password,'localhost', database);
+					self.writeConfig(user_name, password,host_port, database);
 				obj.updateStatus('Connected to database');
-				obj.setProgress(1.00);
 				connection.close();
-				
+
 			}
 		});
-		
+
 	}
 
 
 
-	this.writeConfig = function(user, password, host, database){
+	this.writeConfig = function(user, password, host_port, database){
 		var configObj = new Object();
-		configObj.host = host;
+		configObj.host_port = host_port;
 		configObj.user = user;
 		configObj.password = password;
 		configObj.database = database;
@@ -116,12 +119,12 @@ var DbManager = function(){
 
 		});
 	}
-	
+
 
 	this.setSaveProgressCallback = function(callbackObj){
 		progressCbk = callbackObj;
 	}
-	
+
 	this.setConnectionCallback = function(successCbk, failureCbk){
 		connSuccessCbk = successCbk;
 		connFailureCbk = failureCbk;
@@ -148,7 +151,7 @@ var DbManager = function(){
 				if(connSuccessCbk){
 					connSuccessCbk();
 				}
-				
+
 			}
 		});
 
@@ -276,7 +279,7 @@ var DbManager = function(){
 			  for(var i=0; i < results.length;i++ ){
 				  dataObj.databases.push(results[i].Database);
 			  }
-			  cbk(JSON.stringify(dataObj));
+			  cbk(dataObj);
 		});
 
 
@@ -296,8 +299,10 @@ var DbManager = function(){
 	}
 
 	this.restoreDatabase = function(folderName, destination, dbName, callback){
-		console.log(new Date().getTime());
+		console.log('start time', new Date().getTime());
 		//Using nested callbacks. rather prefer using promises
+		console.debug('folderName ', folderName, 'destination ', destination,'dbname ', dbName);
+
 		var self = this;
 		self.loadPreImportScript(function (status){
 			fs.readFile(folderName+"/structure.sql", function(err, data){
@@ -308,7 +313,8 @@ var DbManager = function(){
 					if(error) throw error;
 					//console.log('Import of db structure result is: ', results);
 					callback(15, "Imported Structure");
-					self.importData(folderName, destination, dbName, callback);
+					self.importData(folderName, destination, callback);
+
 				});
 			});
 		});
@@ -334,7 +340,7 @@ var DbManager = function(){
 		});
 	}
 
-	this.importData = function(folderName, destination, dbName, progressCbk){
+	this.importData = function(folderName, destination, progressCbk){
 		console.log('import data '+folderName);
 		var self = this;
 		var os = require('os');
@@ -390,7 +396,7 @@ var DbManager = function(){
 					if(err) throw err;
 					progressCbk(35, "Copied files to mysql file directory");
 					self.loadData(files, progressCbk);
-					
+
 
 
 				});
@@ -411,12 +417,14 @@ var DbManager = function(){
 			//console.log('qry '+qry);
 			conn.query(qry, function(err, results, fields){
 				fileTrack.completedCount++;
-				var percent = 35.0 + fileTrack.completedCount*65.0/files.length;
+				var percent = 35.0 + (fileTrack.completedCount+1)*65.0/files.length;
 				console.log('load data result '+files[fileTrack.completedCount-1].tableName, results);
 				progressCbk(percent, "Importing "+files[fileTrack.completedCount].tableName);
 				console.log(new Date().getTime());
-				console.log(fileTrack.completedCount+" - "+files.length);
-				if(fileTrack.completedCount+1==files.length){
+				console.log(fileTrack.completedCount+" - "+files.length+" - "+ percent);
+				if((fileTrack.completedCount+1)==files.length){
+					percent = 100;
+					console.log('completed successfully');
 					progressCbk(percent, "Database imported successfully");
 				}
 

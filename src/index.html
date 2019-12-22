@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Mysql Fast Backup and Restore</title>
+    <link type="text/css" rel="stylesheet" href="css/materialize.css"  media="screen,projection"/>
+    <script type="text/javascript" src="js/materialize.js"></script>
+    <script type="text/javascript" src="js/app.js"> </script>
+    <script type="text/javascript" src="js/main.js"> </script>
+    <link type="text/css" rel="stylesheet" href="node_modules/material-icons/iconfont/material-icons.css" />
+    <link type="text/css" rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <nav>
+     <div class="nav-wrapper blue">
+       <a href="#" class="brand-logo center">Mysql Fast Backup & Restore</a>
+     </div>
+    </nav>
+    <div class="loader">
+      <div id="progressBar" class="progress">
+        <div class="indeterminate"></div>
+      </div>
+      <span >Checking existing configuration...</span>
+    </div>
+
+    <div id="configModal" class="modal modal-fixed-footer">
+      <div class="config-header">
+        <span>Mysql Configuration</span>
+      </div>
+      <div class="modal-content">
+        <div class="row">
+
+            <div class="input-field col s6">
+              <input id="host_port" type="text" placeholder="localhost:3306" class="validate">
+              <label for="host_port">Host and Port</label>
+            </div>
+
+            <div class="input-field col s6">
+              <input id="database" type="text" placeholder="" class="validate">
+              <label for="database">database</label>
+            </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="username" type="text" placeholder="root" class="validate">
+            <label for="username">Username</label>
+          </div>
+          <div class="input-field col s12">
+            <input id="password" onkeypress="return onKeyPress(event)" type="password" placeholder="root" class="validate">
+            <label for="password">Password</label>
+          </div>
+
+          <label class="col s12">
+            <input id="remember" type="checkbox" class="filled-in" />
+            <span>Remember</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span id="status" ></span>
+        <a href="#!" onclick="saveConfig()" class="waves-effect waves-green btn-flat blue">Save</a>
+      </div>
+    </div>
+
+    <div id="selection" style="display:none; text-align:center;">
+      <div class="icon-box" onclick="loadBackup();">
+        <div class="col s6 icons">
+          <span class="large material-icons">backup</span>
+        </div>
+        <span>Backup</span>
+      </div>
+      <div class="icon-box" id="restoreBtn">
+        <div class="col s6 icons">
+          <span class="large material-icons">restore</span>
+
+        </div>
+        <span>Restore</span>
+      </div>
+
+    </div>
+  </body>
+</html>
